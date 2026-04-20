@@ -1,0 +1,155 @@
+<!-- Navbar -->
+<nav class="navbar">
+  <span class="brand">Quanment</span>
+  <div class="nav-links">
+    <span class="nav-link" (click)="goToHistory()">History</span>
+    <span class="nav-link logout" *ngIf="isLoggedIn" (click)="logout()">Logout</span>
+    <span class="nav-link login-btn" *ngIf="!isLoggedIn" (click)="goToLogin()">Login</span>
+  </div>
+</nav>
+
+<!-- Hero Banner -->
+<div class="hero-banner">
+  <h1>Welcome To Quantity Measurement</h1>
+  <p class="hero-sub" *ngIf="!isLoggedIn">
+    Use the app freely ·
+    <span class="hero-link" (click)="goToLogin()">Login</span>
+    to save history
+  </p>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+
+  <!-- Type Selector Cards -->
+  <div class="section-label">CHOOSE TYPE</div>
+  <div class="type-cards">
+
+    <div class="type-card teal"
+         [class.active]="selectedType === 'LENGTH'"
+         (click)="selectType('LENGTH')">
+      <div class="type-icon">📏</div>
+      <div class="type-name">Length</div>
+    </div>
+
+    <div class="type-card red"
+         [class.active]="selectedType === 'TEMPERATURE'"
+         (click)="selectType('TEMPERATURE')">
+      <div class="type-icon">🌡️</div>
+      <div class="type-name">Temperature</div>
+    </div>
+
+    <div class="type-card purple"
+         [class.active]="selectedType === 'VOLUME'"
+         (click)="selectType('VOLUME')">
+      <div class="type-icon">🧪</div>
+      <div class="type-name">Volume</div>
+    </div>
+
+    <div class="type-card orange"
+         [class.active]="selectedType === 'WEIGHT'"
+         (click)="selectType('WEIGHT')">
+      <div class="type-icon">⚖️</div>
+      <div class="type-name">Weight</div>
+    </div>
+
+  </div>
+
+  <!-- Operation Selector -->
+  <div class="section-label" style="margin-top: 28px;">CHOOSE OPERATION</div>
+
+  <!-- Temperature notice -->
+  <div class="temp-notice" *ngIf="selectedType === 'TEMPERATURE'">
+    ℹ️ Temperature only supports <strong>Convert</strong> and <strong>Compare</strong>
+  </div>
+
+  <div class="operation-tabs">
+    <button
+      *ngFor="let op of operations"
+      class="op-btn"
+      [class.active]="selectedOperation === op"
+      [class.op-disabled]="isOperationDisabled(op)"
+      [disabled]="isOperationDisabled(op)"
+      (click)="selectOperation(op)">
+      {{ op }}
+      <span class="op-tooltip" *ngIf="isOperationDisabled(op)">Not supported for Temperature</span>
+    </button>
+  </div>
+
+  <!-- Input Fields -->
+  <div class="input-row">
+
+    <div class="input-card">
+      <div class="input-label">FROM</div>
+      <input
+        type="number"
+        [(ngModel)]="fromValue"
+        class="value-input"/>
+      <select [(ngModel)]="fromUnit" class="unit-select">
+        <option *ngFor="let unit of units" [value]="unit">
+          {{ formatUnit(unit) }}
+        </option>
+      </select>
+    </div>
+
+    <div class="arrow-icon">→</div>
+
+    <div class="input-card">
+      <div class="input-label">TO</div>
+
+      <!-- For CONVERT: show read-only result -->
+      <div class="result-display" *ngIf="selectedOperation === 'CONVERT'">
+        {{ result ? (result.resultValue !== null ? result.resultValue : result.resultString) : '—' }}
+      </div>
+
+      <!-- For other operations: allow user to enter a second value -->
+      <input
+        *ngIf="selectedOperation !== 'CONVERT'"
+        type="number"
+        [(ngModel)]="toValue"
+        class="value-input"/>
+
+      <select [(ngModel)]="toUnit" class="unit-select">
+        <option *ngFor="let unit of units" [value]="unit">
+          {{ formatUnit(unit) }}
+        </option>
+      </select>
+    </div>
+
+  </div>
+
+  <!-- Calculate Button -->
+  <button class="calculate-btn" (click)="calculate()" [disabled]="loading">
+    {{ loading ? 'Calculating...' : 'Calculate' }}
+  </button>
+
+  <!-- Not logged in warning -->
+  <!-- <div class="alert-info" *ngIf="!isLoggedIn">
+    ℹ️ <span class="link" (click)="goToLogin()">Login</span> to use Calculate and save history
+  </div> -->
+
+  <!-- Error -->
+  <div class="alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <!-- Result Card -->
+  <div class="result-card" *ngIf="result">
+    <div class="result-title">Result</div>
+    <div class="result-row">
+      <span class="result-label">Input:</span>
+      <span>{{ result.thisValue }} {{ formatUnit(result.thisUnit) }}</span>
+    </div>
+    <div class="result-row" *ngIf="result.resultValue !== null && result.resultValue !== undefined">
+      <span class="result-label">Output:</span>
+      <span class="result-value">{{ result.resultValue }} {{ formatUnit(result.resultUnit) }}</span>
+    </div>
+    <div class="result-row" *ngIf="result.resultString">
+      <span class="result-label">Result:</span>
+      <span class="result-value">{{ result.resultString }}</span>
+    </div>
+    <div class="result-row">
+      <span class="result-label">Operation:</span>
+      <span>{{ result.operation }}</span>
+    </div>
+  </div>
+
+</div>

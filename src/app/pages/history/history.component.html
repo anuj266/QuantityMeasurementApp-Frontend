@@ -1,0 +1,61 @@
+<nav class="navbar">
+  <div class="brand" (click)="goHome()">QuantityApp</div>
+  <div class="nav-link" (click)="goHome()">Back to Home</div>
+</nav>
+
+<div class="hero-banner">
+  <h1>Measurement History</h1>
+</div>
+
+<main class="main-content">
+  <div class="section-label">FILTER BY OPERATION</div>
+  
+  <div class="operation-tabs">
+    <button *ngFor="let op of operations"
+            class="op-btn"
+            [class.active]="selectedOperation === op"
+            (click)="selectOperation(op)">
+      {{ op }}
+    </button>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert-error">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="loading" class="loading-text">
+    Loading history...
+  </div>
+
+  <div *ngIf="!loading && history.length === 0 && !errorMessage" class="empty-state">
+    No history found for this operation.
+  </div>
+
+  <div *ngIf="!loading && history.length > 0" class="table-wrapper">
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th>Operation</th>
+          <th>From</th>
+          <th>To / With</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of history">
+          <td><span class="op-badge">{{ item.operation }}</span></td>
+          <td>{{ item.thisValue }} {{ formatUnit(item.thisUnit) }}</td>
+          <td>{{ item.thatValue }} {{ formatUnit(item.thatUnit) }}</td>
+          <td class="result-cell" [style.color]="item.errorMessage ? '#c0392b' : '#222'">
+            <ng-container *ngIf="item.errorMessage; else successResult">
+              {{ item.errorMessage }}
+            </ng-container>
+            <ng-template #successResult>
+              {{ item.resultString || item.resultValue + ' ' + formatUnit(item.resultUnit) }}
+            </ng-template>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</main>

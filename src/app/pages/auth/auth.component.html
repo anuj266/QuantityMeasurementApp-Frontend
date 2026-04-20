@@ -1,0 +1,139 @@
+<div class="auth-wrapper">
+  <div class="auth-card">
+
+    <!-- Left illustration panel -->
+    <div class="auth-illustration">
+      <div class="illustration-circle">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="160" height="160">
+          <circle cx="100" cy="100" r="100" fill="#4a90d9"/>
+          <circle cx="100" cy="100" r="80" fill="#5ba3e8"/>
+          <rect x="60" y="75" width="80" height="50" rx="6" fill="white" opacity="0.9"/>
+          <rect x="68" y="83" width="6" height="14" rx="2" fill="#4a90d9"/>
+          <rect x="80" y="83" width="6" height="10" rx="2" fill="#4a90d9"/>
+          <rect x="92" y="83" width="6" height="14" rx="2" fill="#4a90d9"/>
+          <rect x="104" y="83" width="6" height="10" rx="2" fill="#4a90d9"/>
+          <rect x="116" y="83" width="6" height="14" rx="2" fill="#4a90d9"/>
+        </svg>
+      </div>
+      <h2 class="app-brand">QUANMENT</h2>
+      <p class="app-tagline">Quantity Measurement App</p>
+      <button class="back-btn" (click)="goBack()">← Back to App</button>
+    </div>
+
+    <!-- Right form panel -->
+    <div class="auth-form-panel">
+
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button class="tab-btn" [class.active]="activeTab === 'login'" (click)="switchTab('login')">
+          LOGIN
+        </button>
+        <button class="tab-btn" [class.active]="activeTab === 'signup'" (click)="switchTab('signup')">
+          SIGNUP
+        </button>
+      </div>
+
+      <!-- Alerts -->
+      <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+      <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
+
+      <!-- Google Button -->
+      <button class="google-btn" (click)="loginWithGoogle()">
+        <svg width="18" height="18" viewBox="0 0 48 48">
+          <path fill="#FFC107" d="M43.6 20H24v8h11.3C33.7 33.4 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 2.9l5.7-5.7C34.1 6.5 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 20-8 20-20 0-1.3-.2-2.7-.4-4z"/>
+          <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 15.1 18.9 12 24 12c3 0 5.7 1.1 7.8 2.9l5.7-5.7C34.1 6.5 29.3 4 24 4 16.3 4 9.7 8.4 6.3 14.7z"/>
+          <path fill="#4CAF50" d="M24 44c5.2 0 9.9-1.9 13.5-5l-6.2-5.2C29.4 35.6 26.8 36 24 36c-5.2 0-9.7-3.3-11.3-8H6.1C9.4 37.8 16.2 44 24 44z"/>
+          <path fill="#1976D2" d="M43.6 20H24v8h11.3c-.8 2.3-2.3 4.3-4.2 5.8l6.2 5.2C41.5 35.7 44 30.3 44 24c0-1.3-.2-2.7-.4-4z"/>
+        </svg>
+        Continue with Google
+      </button>
+
+      <div class="divider"><span>or</span></div>
+
+      <!-- LOGIN FORM -->
+      <div *ngIf="activeTab === 'login'" class="form-body">
+
+        <div class="form-group">
+          <label>Username or Email</label>
+          <input
+            type="text"
+            [(ngModel)]="loginData.usernameOrEmail"
+            placeholder="Enter username or email"
+            class="form-input"/>
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <div class="password-wrapper">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              [(ngModel)]="loginData.password"
+              placeholder="Enter your password"
+              class="form-input"/>
+            <button class="toggle-pwd" (click)="togglePassword()" type="button">
+              <span *ngIf="showPassword">🙈</span>
+              <span *ngIf="!showPassword">👁️</span>
+            </button>
+          </div>
+        </div>
+
+        <button class="submit-btn" (click)="onLogin()" [disabled]="loading">
+          {{ loading ? 'Logging in...' : 'Login' }}
+        </button>
+
+        <p class="switch-text">
+          Don't have an account?
+          <span class="link" (click)="switchTab('signup')">Sign up</span>
+        </p>
+      </div>
+
+      <!-- SIGNUP FORM -->
+      <div *ngIf="activeTab === 'signup'" class="form-body">
+
+        <div class="form-group">
+          <label>Username <span class="required">*</span></label>
+          <input
+            type="text"
+            [(ngModel)]="signupData.username"
+            placeholder="Choose a username (min 3 chars)"
+            class="form-input"/>
+        </div>
+
+        <div class="form-group">
+          <label>Email <span class="optional">(optional)</span></label>
+          <input
+            type="email"
+            [(ngModel)]="signupData.email"
+            placeholder="Enter your email address"
+            class="form-input"/>
+          <small class="hint">Adding email lets you login with email too</small>
+        </div>
+
+        <div class="form-group">
+          <label>Password <span class="required">*</span></label>
+          <div class="password-wrapper">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              [(ngModel)]="signupData.password"
+              placeholder="Create a password (min 6 chars)"
+              class="form-input"/>
+            <button class="toggle-pwd" (click)="togglePassword()" type="button">
+              <span *ngIf="showPassword">🙈</span>
+              <span *ngIf="!showPassword">👁️</span>
+            </button>
+          </div>
+        </div>
+
+        <button class="submit-btn signup" (click)="onSignup()" [disabled]="loading">
+          {{ loading ? 'Creating account...' : 'Signup' }}
+        </button>
+
+        <p class="switch-text">
+          Already have an account?
+          <span class="link" (click)="switchTab('login')">Login</span>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
