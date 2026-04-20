@@ -1,6 +1,4 @@
 export const environment = {
   production: true,
-  // ✅ Replace with your actual Render URL after backend is deployed
-  apiUrl: 'https://your-render-service-name.onrender.com',
+  apiUrl: 'https://quantitymeasurementapp-1-n87v.onrender.com',  // ← your URL
 };
-
