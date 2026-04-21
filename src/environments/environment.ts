@@ -1,4 +1,4 @@
 export const environment = {
-  production: false,
-  apiUrl: '', // Empty = proxy.conf.json forwards /auth and /api to localhost:8080
+  production: true,
+  apiUrl: 'https://quantitymeasurementapp-pwp4.onrender.com'
 };
